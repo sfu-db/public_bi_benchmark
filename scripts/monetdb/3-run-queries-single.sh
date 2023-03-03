@@ -3,11 +3,10 @@
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 WORKING_DIR=$(pwd)
 
-
 usage() {
 cat <<EOM
 Usage: $(basename $0) <dataset-dir>
-  dataset-dir    path to dataset root directory
+  datasaet-name      name of the dataset
 EOM
 }
 
@@ -15,7 +14,8 @@ if [ "$#" -ne 1 ]; then
 	usage
 	exit 1
 fi
-DATASET_DIR="$1"
+DATASET="$1"
+
 
 mclient --version > /dev/null
 ret=$?
@@ -24,25 +24,13 @@ if [ "$ret" -ne 0 ]; then
 	exit $ret
 fi
 
-cd $DATASET_DIR/PublicBIbenchmark
-ret=$?
-if [ $ret -ne 0 ]; then
-	exit $ret
-fi
 
-
-SCRIPTS="\
-$SCRIPT_DIR/lib/1-create-MonetDB-load_sql.sh \
-$SCRIPT_DIR/lib/2-MonetDB-load-data.sh"
-
-for s in $SCRIPTS
+for f in $SCRIPT_DIR/../../benchmark/$DATASET/queries-monetdb/*.sql
 do
-	echo "$(date) running: $s"
-	$s
+	echo "$(date) $f"
+	mclient -e -i -tperformance $f > "$f.out" 2> "$f.err"
 	ret=$?
-	if [ "$ret" -ne 0 ]; then
-		exit $ret
-	fi
+	echo $ret > "$f.ret"
 done
 
 

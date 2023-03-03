@@ -3,7 +3,7 @@
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 WORKING_DIR=$(pwd)
 
-BASE_URL="http://www.cwi.nl/~boncz/PublicBIbenchmark"
+BASE_URL="https://homepages.cwi.nl/~boncz/PublicBIbenchmark"
 
 usage() {
 cat <<EOM
@@ -30,10 +30,14 @@ mkdir -p "$DST_DIR/PublicBIbenchmark"
 for wb_path in $SCRIPT_DIR/../../benchmark/*
 do
     wb="$(basename $wb_path)"
+    echo "download $wb..."
     mkdir -p "$DST_DIR/PublicBIbenchmark/$wb"
     for f in $wb_path/samples/*
     do
         t="$(basename $f)"; t="${t%.sample.csv}"
-        wget -P "$DST_DIR/PublicBIbenchmark/$wb" "$BASE_URL/$wb/$t.csv.bz2"
+        # wget -P "$DST_DIR/PublicBIbenchmark/$wb" "$BASE_URL/$wb/$t.csv.bz2"
+	if [ ! -f "$DST_DIR/PublicBIbenchmark/$wb/$t.csv.bz2" ]; then
+    		curl -k "$BASE_URL/$wb/$t.csv.bz2" -o "$DST_DIR/PublicBIbenchmark/$wb/$t.csv.bz2"
+	fi
     done
 done

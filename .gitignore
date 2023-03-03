@@ -1,3 +1,5 @@
+*.ret
+
 benchmark/*/tables-vectorwise
 
 benchmark/*/load-monetdb

@@ -19,7 +19,8 @@ do
 		echo "$r rows"
 
 		mkdir -p "$d/load-monetdb"
-		echo "copy $r offset 1 records into \"$t\" from '$PWD/$f' delimiters '|','\\n','' null as 'null' locked;" \
+		# echo "copy $r offset 1 records into \"$t\" from '$PWD/$f' delimiters '|','\\n','' null as 'null' locked;" \
+		echo "copy $r offset 1 records into \"$t\" from '$PWD/$f' delimiters '|','\\n','' null as 'null';" \
 		> "$d/load-monetdb/$t.sql"
 	done
 done

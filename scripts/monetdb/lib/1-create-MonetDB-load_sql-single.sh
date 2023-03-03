@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# create SQL load scripts for MonetDB
+# using COPY INTO statements
+# count of rows of CSV file
+
+
+d=$1
+for f in "$d"/*.csv
+do
+	echo "$(date) $f"
+
+	t="${f##*/}"
+	t="${t%.csv*}"
+	# t="${t%.sample.csv*}"
+
+	r="$(wc -l "$f")"; r="${r%% *}"
+	echo "$r rows"
+
+	mkdir -p "$d/load-monetdb"
+	# echo "copy $r offset 1 records into \"$t\" from '$PWD/$f' delimiters '|','\\n','' null as 'null' locked;" \
+	echo "copy $r offset 1 records into \"$t\" from '$PWD/$f' delimiters '|','\\n','' null as 'null';" \
+	> "$d/load-monetdb/$t.sql"
+done
+
+echo "$(date) done"
