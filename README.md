@@ -35,6 +35,21 @@ queries-vectorwise-disabled:  queries that do not work on VectorWise
 - decompresses the *.csv.bz2* files
 - script must be executed from the root directory of the dataset downloaded with **lib/1-download-data.sh**
 
+### scripts/duckdb
+- scripts to create tables, load *.csv* files and run the queries on DuckDB
+j
+Requirements:
+- data files should be decompressed (**lib/2-decompress-csv.sh**)
+- running DuckDB instance
+- `$DUCKDB` command to be available and configured (`export $DUCKDB=/path/to/duckdb/bin`)
+- example of `duckdb` configuration:
+```
+[user@machine ~]$ cat .~/.duckdbrc
+.timer on
+.open dbfile
+```
+
+
 ### scripts/monetdb
 - scripts to create tables, load *.csv* files and run the queries on MonetDB
 
