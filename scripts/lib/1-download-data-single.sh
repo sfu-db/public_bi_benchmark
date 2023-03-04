@@ -35,5 +35,8 @@ mkdir -p "$DST_DIR/PublicBIbenchmark/$wb"
 for f in $wb_path/samples/*
 do
     t="$(basename $f)"; t="${t%.sample.csv}"
-    curl -k "$BASE_URL/$wb/$t.csv.bz2" -o "$DST_DIR/PublicBIbenchmark/$wb/$t.csv.bz2"
+    curl -k "$BASE_URL/$wb/$t.csv.bz2" -o "$DST_DIR/PublicBIbenchmark/$wb/$t.csv.bz2" &
+    sleep 1
 done
+
+wait

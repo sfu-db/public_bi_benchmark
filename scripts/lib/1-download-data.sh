@@ -37,7 +37,10 @@ do
         t="$(basename $f)"; t="${t%.sample.csv}"
         # wget -P "$DST_DIR/PublicBIbenchmark/$wb" "$BASE_URL/$wb/$t.csv.bz2"
 	if [ ! -f "$DST_DIR/PublicBIbenchmark/$wb/$t.csv.bz2" ]; then
-    		curl -k "$BASE_URL/$wb/$t.csv.bz2" -o "$DST_DIR/PublicBIbenchmark/$wb/$t.csv.bz2"
+    		curl -k "$BASE_URL/$wb/$t.csv.bz2" -o "$DST_DIR/PublicBIbenchmark/$wb/$t.csv.bz2" &
+		sleep 1
 	fi
     done
+    wait
 done
+
