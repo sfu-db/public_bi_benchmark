@@ -1,0 +1,2 @@
+.timer on
+.open /root/tpch-kit/dbgen/tpch10.duckdb

@@ -1,0 +1,2 @@
+.timer on
+.open /root/cx-fed-duckdb/data/bi.duckdb

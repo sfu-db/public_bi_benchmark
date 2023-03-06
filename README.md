@@ -24,6 +24,10 @@ queries-vectorwise-disabled:  queries that do not work on VectorWise
 
 ## Scripts
 
+**xxx-single.sh**
+- scripts to run **xxx.sh** but only for a single dataset
+- input a new parameter at the end to represent dataset name
+
 ### scripts/lib
 - scripts that download and decompress the full data files
 
@@ -41,14 +45,23 @@ j
 Requirements:
 - data files should be decompressed (**lib/2-decompress-csv.sh**)
 - running DuckDB instance
-- `$DUCKDB` command to be available and configured (`export $DUCKDB=/path/to/duckdb/bin`)
+- `$DUCKDB` command to be available and configured (`export $DUCKDB=/path/to/duckdb/bin -init /path/to/bi.duckdbrc`)
 - example of `duckdb` configuration:
 ```
-[user@machine ~]$ cat .~/.duckdbrc
+[user@machine ~]$ cat xxx.duckdbrc
 .timer on
 .open dbfile
 ```
-
+- run TPC-H
+	- export DUCKDB="/root/cx-fed-duckdb/build/release/duckdb -init /root/public_bi_benchmark/scripts/duckdb/tpch.duckdbrc"
+	- bash scripts/duckdb/3-run-workload-single.sh TPCH
+	- cold (1st run) result: cat tmp.sql.out | grep "Run Time" | awk -F' ' 'FNR % 3 == 1{print $5*1000}' | tr '\n' ,
+	- warm (3rd run) result: cat tmp.sql.out | grep "Run Time" | awk -F' ' 'FNR % 3 == 0{print $5*1000}' | tr '\n' ,
+- run $DATASET
+	- export DUCKDB="/root/cx-fed-duckdb/build/release/duckdb -init /root/public_bi_benchmark/scripts/duckdb/bi.duckdbrc"
+	- bash scripts/duckdb/3-run-workload-single.sh $DATASET
+	- cold (1st run) result: cat tmp.sql.out | grep "Run Time" | awk -F' ' 'FNR % 3 == 1{print $5*1000}' | tr '\n' ,
+	- warm (3rd run) result: cat tmp.sql.out | grep "Run Time" | awk -F' ' 'FNR % 3 == 0{print $5*1000}' | tr '\n' ,
 
 ### scripts/monetdb
 - scripts to create tables, load *.csv* files and run the queries on MonetDB
@@ -65,6 +78,16 @@ password=monetdb
 language=sql
 database=tpb
 ```
+
+- run TPC-H
+	- replace `database=bi` with `database=tpch` in `~/.monetdb`
+	- bash scripts/monetdb/3-run-workload-single.sh TPCH
+	- cold (1st run) result: cat tmp.sql.err | awk -F' |:' 'FNR%3==1{print $8}' | tr '\n' ,
+	- warm (3rd run) result: cat tmp.sql.err | awk -F' |:' 'FNR%3==0{print $8}' | tr '\n' ,
+- run $DATASET
+	- bash scripts/monetdb/3-run-workload-single.sh $DATASET
+	- cold (1st run) result: cat tmp.sql.err | awk -F' |:' 'FNR%3==1{print $8}' | tr '\n' ,
+	- warm (3rd run) result: cat tmp.sql.err | awk -F' |:' 'FNR%3==0{print $8}' | tr '\n' ,
 
 **monetdb/1-create-tables.sh**
 - create the tables in MonetDB

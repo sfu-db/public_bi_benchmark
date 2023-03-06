@@ -18,17 +18,17 @@ do
 	if [ "$ret" -ne 0 ]; then
 		# in case of errors, resort to
 		# less strict "best effort" variant
-		echo "$(date) $f 'Best Effort'"
-		{
-			sed 's|;$| best effort;|' "$f"
-			cat <<- EOF
-				create table "$t-rejects" as (select * from rejects) with data;
-				select count(distinct rowid), 'rows cause' from "$t-rejects"
-				union all
-				select count(*), 'rejects; saved in table $t-rejects' from "$t-rejects";
-			EOF
-		} \
-		| $DUCKDB -ftab > $f-reject.out 2> $f-reject.err
+		# echo "$(date) $f 'Best Effort'"
+		# {
+		# 	sed 's|;$| best effort;|' "$f"
+		# 	cat <<- EOF
+		# 		create table "$t-rejects" as (select * from rejects) with data;
+		# 		select count(distinct rowid), 'rows cause' from "$t-rejects"
+		# 		union all
+		# 		select count(*), 'rejects; saved in table $t-rejects' from "$t-rejects";
+		# 	EOF
+		# } \
+		# | $DUCKDB -ftab > $f-reject.out 2> $f-reject.err
 		ret=$?
 		echo $ret > $f-reject.ret
 	fi
