@@ -7,3 +7,5 @@ benchmark/*/tables-vectorwise
 benchmark/*/load-monetdb
 benchmark/*/load-vectorwise
 benchmark/*/load-duckdb
+
+tmp*
