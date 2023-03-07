@@ -39,6 +39,29 @@ queries-vectorwise-disabled:  queries that do not work on VectorWise
 - decompresses the *.csv.bz2* files
 - script must be executed from the root directory of the dataset downloaded with **lib/1-download-data.sh**
 
+### scripts/clickhouse
+- scripts to create tables, load *.csv* files and run the queries on Clickhouse
+j
+Requirements:
+- data files should be decompressed (**lib/2-decompress-csv.sh**)
+- running Clickhouse instance
+- `$CLICKHOUSE` command to be available and configured (`export $CLIKCHOUSE=clickhouse-client -dbi`)
+
+- run TPC-H
+	- export $CLIKCHOUSE=clickhouse-client -dtpch
+	- bash scripts/clickhouse/3-run-workload-single.sh TPCH
+	- cold (1st run) result: cat tmp.sql.err  | awk 'FNR%3==1{print $1*1000}' | tr '\n' ,
+	- warm (3rd run) result: cat tmp.sql.err  | awk 'FNR%3==0{print $1*1000}' | tr '\n' ,
+- run $DATASET
+	- export $CLIKCHOUSE=clickhouse-client -dbi
+	- bash scripts/clickhouse/1-create-tables-single.sh $DATASET
+	- bash scripts/clickhouse/1.5-preprocess-data-single.sh $DATA_DIR $DATASET
+	- bash scripts/clickhouse/2-load-data-single.sh $DATA_DIR $DATASET
+	- bash scripts/clickhouse/3-run-workload-single.sh $DATASET
+	- cold (1st run) result: cat tmp.sql.err  | awk 'FNR%3==1{print $1*1000}' | tr '\n' ,
+	- warm (3rd run) result: cat tmp.sql.err  | awk 'FNR%3==0{print $1*1000}' | tr '\n' ,
+
+
 ### scripts/duckdb
 - scripts to create tables, load *.csv* files and run the queries on DuckDB
 j
@@ -54,11 +77,15 @@ Requirements:
 ```
 - run TPC-H
 	- export DUCKDB="/root/cx-fed-duckdb/build/release/duckdb -init /root/public_bi_benchmark/scripts/duckdb/tpch.duckdbrc"
+	- bash scripts/duckdb/2.5-query-preprocess-single.sh $DATASET
 	- bash scripts/duckdb/3-run-workload-single.sh TPCH
 	- cold (1st run) result: cat tmp.sql.out | grep "Run Time" | awk -F' ' 'FNR % 3 == 1{print $5*1000}' | tr '\n' ,
 	- warm (3rd run) result: cat tmp.sql.out | grep "Run Time" | awk -F' ' 'FNR % 3 == 0{print $5*1000}' | tr '\n' ,
 - run $DATASET
 	- export DUCKDB="/root/cx-fed-duckdb/build/release/duckdb -init /root/public_bi_benchmark/scripts/duckdb/bi.duckdbrc"
+	- bash scripts/duckdb/1-create-tables-single.sh $DATASET
+	- bash scripts/duckdb/2-load-data-single.sh $DATA_DIR $DATASET
+	- bash scripts/duckdb/2.5-query-preprocess-single.sh $DATASET
 	- bash scripts/duckdb/3-run-workload-single.sh $DATASET
 	- cold (1st run) result: cat tmp.sql.out | grep "Run Time" | awk -F' ' 'FNR % 3 == 1{print $5*1000}' | tr '\n' ,
 	- warm (3rd run) result: cat tmp.sql.out | grep "Run Time" | awk -F' ' 'FNR % 3 == 0{print $5*1000}' | tr '\n' ,

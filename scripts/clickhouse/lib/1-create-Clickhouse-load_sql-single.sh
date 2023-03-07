@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# create SQL load scripts for Clickhouse
+# using COPY INTO statements
+# count of rows of CSV file
+
+
+d=$1
+for f in "$d"/*.ch.csv
+do
+	echo "$(date) $f"
+
+	t="${f##*/}"
+	t="${t%.ch.csv*}"
+	# t="${t%.sample.csv*}"
+
+	r="$(wc -l "$f")"; r="${r%% *}"
+	echo "$r rows"
+
+	mkdir -p "$d/load-clickhouse"
+	echo "SET format_csv_delimiter = '|'; SET format_csv_null_representation = 'null'; INSERT INTO \"$t\" FROM INFILE '$PWD/$f' FORMAT CSV;" \
+	> "$d/load-clickhouse/$t.sql"
+done
+
+echo "$(date) done"
