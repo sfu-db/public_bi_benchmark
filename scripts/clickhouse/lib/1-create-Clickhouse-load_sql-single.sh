@@ -18,7 +18,7 @@ do
 	echo "$r rows"
 
 	mkdir -p "$d/load-clickhouse"
-	echo "SET format_csv_delimiter = '|'; SET format_csv_null_representation = 'null'; INSERT INTO \"$t\" FROM INFILE '$PWD/$f' FORMAT CSV;" \
+	echo "SET format_csv_delimiter = '|'; SET format_csv_null_representation = 'null'; SET format_csv_allow_single_quotes = 'false';  SET format_csv_allow_double_quotes = 'false'; INSERT INTO \"$t\" FROM INFILE '$PWD/$f' FORMAT CSV;" \
 	> "$d/load-clickhouse/$t.sql"
 done
 

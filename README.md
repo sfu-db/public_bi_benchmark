@@ -46,6 +46,8 @@ Requirements:
 - data files should be decompressed (**lib/2-decompress-csv.sh**)
 - running Clickhouse instance
 - `$CLICKHOUSE` command to be available and configured (`export $CLIKCHOUSE=clickhouse-client -dbi`)
+- for public_bi_benchmark, we add a new column "ID" for primiary key
+- for tpc-h, schema can be found [here](https://github.com/wangxiaoying/tpch-kit/blob/master/dbgen/dss.ch.ddl)
 
 - run TPC-H
 	- export $CLIKCHOUSE=clickhouse-client -dtpch
@@ -54,6 +56,7 @@ Requirements:
 	- warm (3rd run) result: cat tmp.sql.err  | awk 'FNR%3==0{print $1*1000}' | tr '\n' ,
 - run $DATASET
 	- export $CLIKCHOUSE=clickhouse-client -dbi
+	- bash scripts/clickhouse/0.5-preprocess-tables-single.sh $DATASET
 	- bash scripts/clickhouse/1-create-tables-single.sh $DATASET
 	- bash scripts/clickhouse/1.5-preprocess-data-single.sh $DATA_DIR $DATASET
 	- bash scripts/clickhouse/2-load-data-single.sh $DATA_DIR $DATASET

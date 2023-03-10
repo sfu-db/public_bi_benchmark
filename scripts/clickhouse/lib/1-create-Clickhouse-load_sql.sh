@@ -19,8 +19,7 @@ do
 		echo "$r rows"
 
 		mkdir -p "$d/load-clickhouse"
-		# echo "copy $r offset 1 records into \"$t\" from '$PWD/$f' delimiters '|','\\n','' null as 'null' locked;" \
-		echo "copy $r offset 1 records into \"$t\" from '$PWD/$f' delimiters '|','\\n','' null as 'null';" \
+		echo "SET format_csv_delimiter = '|'; SET format_csv_null_representation = 'null'; SET format_csv_allow_single_quotes = 'false';  SET format_csv_allow_double_quotes = 'false'; INSERT INTO \"$t\" FROM INFILE '$PWD/$f' FORMAT CSV;" \
 		> "$d/load-clickhouse/$t.sql"
 	done
 done

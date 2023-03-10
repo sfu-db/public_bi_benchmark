@@ -18,7 +18,7 @@ do
 	echo "$r rows"
 
 	mkdir -p "$d/load-duckdb"
-	echo "copy \"$t\" from '$PWD/$f' WITH (HEADER 1, DELIMITER '|', NULLSTR 'null');" \
+	echo "copy \"$t\" from '$PWD/$f' WITH (HEADER 1, DELIMITER '|', NULLSTR 'null', QUOTE '');" \
 	> "$d/load-duckdb/$t.sql"
 done
 
